@@ -1,0 +1,35 @@
+.Grid
+  --gap: 2px
+  display: flex
+  flex-direction: column
+  justify-content: start
+  align-items: start
+  width: fit-content
+  gap: var(--gap)
+
+  > div
+    display: flex
+    gap: var(--gap)
+    flex-direction: row
+    justify-content: start
+    align-items: start
+
+.Cell
+  padding: 0
+  margin: 0
+  height: 32px
+  width: 32px
+  border: none
+  box-shadow: inset 0 0 0 1px black
+  text-align: center
+  font-weight: bold
+  border-radius: 4px
+  transition: var(--trans)
+
+  &.disabled
+    background: black
+    border-radius: 999px
+
+  &.selected
+    box-shadow: inset 0 0 0 1px rebeccapurple
+    background: color-mix(in srgb, rebeccapurple 33%, var(--bg) 67%)
