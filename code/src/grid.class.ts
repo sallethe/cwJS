@@ -1,6 +1,9 @@
 import { Cell } from './cell.class'
 import type { Coordinates } from './commons'
 
+const xor = (e1: boolean, e2: boolean) =>
+    e1 && !e2 || !e1 && e2
+
 export class Grid {
     matrix: Cell[][]
     dim: number
@@ -8,7 +11,6 @@ export class Grid {
     constructor(dim: number, disabled: Coordinates[] = []) {
         if (dim < 0) throw new Error('Invalid grid dimension')
         const mtx: Cell[][] = []
-        console.log(disabled)
         for (let x = 0; x < dim; x += 1) {
             const l: Cell[] = []
             for (let y = 0; y < dim; y += 1) {
@@ -40,7 +42,7 @@ export class Grid {
         if (coords.x < 0 || coords.y < 0) return
         for (let x = 0; x < this.dim; x += 1)
             for (let y = 0; y < this.dim; y += 1)
-                if (x === coords.x || y === coords.y)
+                if (xor(x === coords.x, y === coords.y))
                     this.matrix[x][y].highlight()
     }
 

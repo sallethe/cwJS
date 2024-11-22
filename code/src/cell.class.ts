@@ -1,7 +1,7 @@
-import {Coordinates} from "./commons";
-import type {Grid} from "./grid.class";
+import { Coordinates } from './commons'
+import type { Grid } from './grid.class'
 
-const HIGHLIGHT_CLASS_NAME = 'selected'
+const HIGHLIGHT_CLASS_NAME = 'highlighted'
 
 export class Cell {
     coords: Coordinates
@@ -17,7 +17,10 @@ export class Cell {
         const e = document.createElement('input')
         e.maxLength = 1
         e.classList.add('Cell')
-        e.onchange = () => (e.value = e.value.toUpperCase())
+        e.onchange = () => e.value =
+            /^[A-Za-z]$/.test(e.value) ?
+                e.value.toUpperCase()
+                : ''
         e.onfocus = () => this.grid.selectCell(this.coords)
         e.onblur = () => this.grid.unselect()
         if (state) {
@@ -29,12 +32,12 @@ export class Cell {
     }
 
     highlight() {
-        if(!this.isDisabled)
+        if (!this.isDisabled)
             this.element.classList.add(HIGHLIGHT_CLASS_NAME)
     }
 
     blur() {
-        if(!this.isDisabled)
+        if (!this.isDisabled)
             this.element.classList.remove(HIGHLIGHT_CLASS_NAME)
     }
 
