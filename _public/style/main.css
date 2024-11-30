@@ -1,0 +1,301 @@
+.Grid {
+  --gap: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  width: fit-content;
+  gap: var(--gap);
+}
+.Grid > div {
+  display: flex;
+  gap: var(--gap);
+  flex-direction: row;
+  justify-content: start;
+  align-items: start;
+}
+
+.Cell {
+  padding: 0;
+  margin: 0;
+  height: 48px;
+  width: 48px;
+  border: none;
+  background: var(--cell);
+  text-align: center;
+  font-weight: bold;
+  border-radius: var(--radius-cell);
+  transition: var(--trans);
+}
+.Cell:focus, .Cell:active {
+  background: var(--main) !important;
+}
+.Cell.disabled {
+  background: var(--text);
+}
+.Cell.highlighted {
+  box-shadow: inset 0 0 0 1px var(--main);
+  background: color-mix(in srgb, var(--main) 33%, var(--bg) 67%);
+}
+
+.WordSet {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: stretch;
+  gap: 16px;
+}
+.WordSet * {
+  margin: 0;
+}
+.WordSet > div {
+  flex-grow: 1;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 4px;
+}
+
+html:root {
+  --trans: all ease-in-out 0.25s;
+  --main: rebeccapurple;
+  --hover: color-mix(in srgb, var(--main), transparent 80%);
+  --active: color-mix(in srgb, var(--main), transparent 50%);
+  --radius-inf: 9999px;
+  --radius-cell: 4px;
+}
+html:root:root[data-theme=dark] {
+  --bg: #000000;
+  --cell: #101010;
+  --text: #FFFFFF;
+  --error: #500000;
+  --filter: brightness(0) invert(1);
+}
+html:root:not([data-theme=dark]) {
+  --bg: #FFFFFF;
+  --cell: #F0F0F0;
+  --text: #202020;
+  --error: #ff9898;
+  --filter: none;
+}
+
+.FormsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 32px;
+}
+.FormsContainer > .separator {
+  width: 2px;
+  border-radius: var(--radius-inf);
+  background: var(--text);
+}
+.FormsContainer > form {
+  flex-basis: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 32px;
+}
+.FormsContainer > form .separator {
+  height: 16px;
+}
+.FormsContainer > form label {
+  display: none;
+}
+.FormsContainer > form > div:first-of-type {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.FormsContainer > form > div:first-of-type > h1 {
+  margin: 0;
+}
+.FormsContainer > form > div:first-of-type > img {
+  height: 64px;
+  filter: var(--filter);
+}
+.FormsContainer > form > div:nth-of-type(2) {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 8px;
+  --padding: 16px;
+  width: 100%;
+}
+.FormsContainer > form > div:nth-of-type(2) > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 12px;
+}
+.FormsContainer > form > div:nth-of-type(2) input {
+  flex-grow: 1;
+  background: var(--cell);
+  padding: var(--padding);
+  border-radius: var(--radius-cell);
+  border: none;
+  transition: var(--trans);
+}
+.FormsContainer > form > div:nth-of-type(2) input:hover {
+  background: var(--hover);
+}
+.FormsContainer > form > div:nth-of-type(2) input:active {
+  background: var(--active);
+}
+.FormsContainer > form > div:nth-of-type(2) a {
+  background: var(--cell);
+  padding: 0 var(--padding);
+  border-radius: var(--radius-cell);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: var(--trans);
+}
+.FormsContainer > form > div:nth-of-type(2) a:hover {
+  background: var(--hover);
+}
+.FormsContainer > form > div:nth-of-type(2) a:active {
+  background: var(--active);
+}
+.FormsContainer > form > div:nth-of-type(2) a > img {
+  height: 24px;
+  filter: var(--filter);
+}
+.FormsContainer > form > input {
+  background: var(--hover);
+  padding: 16px 24px;
+  border-radius: var(--radius-inf);
+  display: flex;
+  border: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: var(--trans);
+  font-weight: bold;
+}
+.FormsContainer > form > input:hover {
+  background: var(--active);
+}
+.FormsContainer > form > input:active {
+  background: var(--main);
+  color: white;
+}
+
+.TopBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px;
+}
+.TopBar > a > img {
+  height: 48px;
+  filter: var(--filter);
+}
+.TopBar > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.Button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  transition: var(--trans);
+  padding: 12px;
+  margin: 0;
+  background: var(--cell);
+  border-radius: var(--radius-inf);
+  aspect-ratio: 1/1;
+}
+.Button:hover {
+  background: var(--hover);
+}
+.Button:active {
+  background: var(--active);
+}
+.Button > img {
+  height: 20px;
+  filter: var(--filter);
+}
+
+.GridContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.ErrorMessage {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: var(--radius-cell);
+  background: var(--error);
+  animation: GoingAway 10s;
+  opacity: 0;
+}
+.ErrorMessage > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 4px;
+}
+.ErrorMessage * {
+  margin: 0;
+}
+.ErrorMessage > img {
+  height: 24px;
+  filter: var(--filter);
+}
+
+@keyframes GoingAway {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+body {
+  margin: 0;
+  font-family: "Ubuntu", sans-serif;
+  background: var(--bg);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+body * {
+  color: var(--text);
+}

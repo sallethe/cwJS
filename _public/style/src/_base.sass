@@ -1,0 +1,22 @@
+html:root
+  --trans: all ease-in-out 0.25s
+  --main: rebeccapurple
+  --hover: color-mix(in srgb, var(--main), transparent 80%)
+  --active: color-mix(in srgb, var(--main), transparent 50%)
+
+  --radius-inf: 9999px
+  --radius-cell: 4px
+
+  &:root[data-theme='dark']
+    --bg: #000000
+    --cell: #101010
+    --text: #FFFFFF
+    --error: #500000
+    --filter: brightness(0) invert(1)
+
+  &:not([data-theme='dark'])
+    --bg: #FFFFFF
+    --cell: #F0F0F0
+    --text: #202020
+    --error: #ff9898
+    --filter: none
