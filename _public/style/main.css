@@ -66,6 +66,7 @@ html:root {
   --active: color-mix(in srgb, var(--main), transparent 50%);
   --radius-inf: 9999px;
   --radius-cell: 4px;
+  --radius-button: 16px;
 }
 html:root:root[data-theme=dark] {
   --bg: #000000;
@@ -115,8 +116,11 @@ html:root:not([data-theme=dark]) {
   align-items: center;
   gap: 8px;
 }
-.FormsContainer > form > div:first-of-type > h1 {
+.FormsContainer > form > div:first-of-type > h1, .FormsContainer > form > div:first-of-type > h2, .FormsContainer > form > div:first-of-type > h3 {
   margin: 0;
+}
+.FormsContainer > form > div:first-of-type > h1 > span, .FormsContainer > form > div:first-of-type > h2 > span, .FormsContainer > form > div:first-of-type > h3 > span {
+  color: var(--main);
 }
 .FormsContainer > form > div:first-of-type > img {
   height: 64px;
@@ -285,6 +289,73 @@ html:root:not([data-theme=dark]) {
     opacity: 0;
   }
 }
+.AccountContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: stretch;
+  gap: 64px;
+  padding: 0 64px 128px;
+}
+.AccountContainer > h1, .AccountContainer > h2 {
+  text-align: center;
+}
+.AccountContainer * {
+  margin: 0;
+}
+.AccountContainer > div:first-of-type {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.AccountContainer > div:first-of-type > img {
+  height: 200px;
+}
+
+.GridButtonContainer {
+  display: grid;
+  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.GridButton {
+  flex-grow: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: solid var(--text) 3px;
+  border-radius: var(--radius-button);
+  padding: 16px;
+  gap: 12px;
+}
+.GridButton > img {
+  height: 96px;
+  filter: var(--filter);
+}
+.GridButton * {
+  margin: 0;
+}
+.GridButton > h1 {
+  font-size: 1.25em;
+}
+.GridButton > h2 {
+  font-size: 0.8em;
+  background: var(--cell);
+  padding: 4px 8px;
+  border-radius: var(--radius-inf);
+}
+.GridButton > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  gap: 8px;
+}
+
 body {
   margin: 0;
   font-family: "Ubuntu", sans-serif;

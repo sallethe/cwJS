@@ -2,7 +2,8 @@
 
 session_start();
 
-include_once "../_credentials.php";
+include_once "../../_credentials.php";
+include_once "../data/patterns.php";
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header('Location: /cwJS/login?error=invdt');
@@ -40,28 +41,13 @@ $username = $_POST["username"];
 $passwd1 = $_POST["passwd1"];
 $passwd2 = $_POST["passwd2"];
 
-if(
-    empty($firstname) ||
-    empty($lastname) ||
-    empty($username) ||
-    empty($passwd1) ||
-    empty($passwd2)
-) {
-    session_abort();
-    header('Location: /cwJS/login?error=invdt');
-    die();
-}
-
-$namePattern = '/^[a-zA-Z\- ]{2,50}$/';
-$idPattern = '/^[a-zA-Z0-9]{5,20}$/';
-$pwdPattern = '/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
 
 if(
-    !preg_match($idPattern, $username)
-    || !preg_match($namePattern, $firstname)
-    || !preg_match($namePattern, $lastname)
-    || !preg_match($pwdPattern, $passwd1)
-    || !preg_match($pwdPattern, $passwd2)
+    !preg_match(PhpPatterns::$idPattern, $username)
+    || !preg_match(PhpPatterns::$namePattern, $firstname)
+    || !preg_match(PhpPatterns::$namePattern, $lastname)
+    || !preg_match(PhpPatterns::$pwdPattern, $passwd1)
+    || !preg_match(PhpPatterns::$pwdPattern, $passwd2)
 ) {
     session_abort();
     header('Location: /cwJS/login?error=invdt');
@@ -105,9 +91,22 @@ try {
     die();
 }
 
+try {
+    $req = $pdo->prepare("SELECT id FROM USERS WHERE username = :username");
+    $req->bindParam(":username", $username);
+    $req->execute();
+} catch(PDOException $e) {
+    session_abort();
+    header('Location: /cwJS/login?error=inter');
+    die();
+}
+
+$id = $req->fetchColumn();
+
 session_regenerate_id(true);
 
 $_SESSION['username'] = $username;
+$_SESSION['id'] = $id;
 $_SESSION['logged'] = true;
 $_SESSION['fn'] = $firstname;
 $_SESSION['ln'] = $lastname;

@@ -2,7 +2,6 @@
 
 abstract class Component
 {
-
     public abstract function getCode(): string;
 
     public function render()

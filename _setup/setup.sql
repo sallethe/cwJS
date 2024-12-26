@@ -13,7 +13,8 @@ CREATE TABLE GRIDS (
     creator INT,
     width INT,
     height INT,
-    grid JSON,
-    words JSON,
+    grid TEXT,
+    words TEXT,
+    word_count INT,
     FOREIGN KEY (creator) REFERENCES USERS(id)
 ) ENGINE = InnoDB;

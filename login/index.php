@@ -2,6 +2,8 @@
 
 session_start();
 
+include_once "../_server/data/patterns.php";
+
 if (isset($_SESSION['logged']) && $_SESSION['logged']) {
     header('location: /cwJS/account/');
 }
@@ -44,23 +46,16 @@ if (isset($_GET['error'])) {
             <img alt="Register" src="../_public/resources/images/signup.svg">
             <h1>Créer un compte</h1>
         </div>
-        <?php
-
-        $namePattern = '^[a-zA-Z\- ]{2,50}$';
-        $idPattern = '^[a-zA-Z0-9]{5,20}$';
-        $pwdPattern = '^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
-
-        ?>
         <div>
             <div>
-                <?php (new Field('fn', 'text', 'Prénom', $namePattern))->render() ?>
-                <?php (new Field('ln', 'text', 'Nom', $namePattern))->render() ?>
+                <?php (new Field('fn', 'text', 'Prénom', HtmlPatterns::$namePattern))->render() ?>
+                <?php (new Field('ln', 'text', 'Nom', HtmlPatterns::$namePattern))->render() ?>
             </div>
             <div class="separator"></div>
-            <?php (new Field('username', 'text', 'Nom d\'utilisateur', $idPattern))->render() ?>
+            <?php (new Field('username', 'text', 'Nom d\'utilisateur', HtmlPatterns::$idPattern))->render() ?>
             <div class="separator"></div>
-            <?php (new Field('passwd1', 'password', 'Mot de passe', $pwdPattern))->render() ?>
-            <?php (new Field('passwd2', 'password', 'Confirmer le mot de passe', $pwdPattern))->render() ?>
+            <?php (new Field('passwd1', 'password', 'Mot de passe', HtmlPatterns::$pwdPattern))->render() ?>
+            <?php (new Field('passwd2', 'password', 'Confirmer le mot de passe', HtmlPatterns::$pwdPattern))->render() ?>
         </div>
         <input type="submit" value="Créer un compte">
     </form>
@@ -71,9 +66,9 @@ if (isset($_GET['error'])) {
             <h1>Se connecter</h1>
         </div>
         <div>
-            <?php (new Field('username', 'text', 'Nom d\'utilisateur', $idPattern))->render() ?>
+            <?php (new Field('username', 'text', 'Nom d\'utilisateur', HtmlPatterns::$idPattern))->render() ?>
             <div class="separator"></div>
-            <?php (new Field('passwd', 'password', 'Mot de passe', $pwdPattern))->render() ?>
+            <?php (new Field('passwd', 'password', 'Mot de passe', HtmlPatterns::$pwdPattern))->render() ?>
         </div>
         <input type="submit" value="Se connecter">
     </form>
