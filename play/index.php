@@ -1,16 +1,10 @@
 <?php
 
-include_once '../_server/interfaces/Component.php';
-include_once '../_server/components/Button.php';
-include_once '../_server/components/TopBar.php';
-include_once '../_server/components/Header.php';
-include_once '../_server/components/Script.php';
+session_start();
 
-if (isset($_GET['debug']) && $_GET['debug'] == 'true') {
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-    error_reporting(E_ALL);
-}
+spl_autoload_register(function ($class) {
+    include_once '../_server/components/'.$class.'.php';
+});
 
 ?>
 
@@ -26,10 +20,21 @@ if (isset($_GET['debug']) && $_GET['debug'] == 'true') {
 ?>
 <body>
 <?php
-(new TopBar([
-    new Button('../login', '../_public/resources/icons/login.svg', 'Se connecter', 'Connexion'),
-    new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')])
-)->render();
+
+if($_SESSION['logged']){
+    $buttons = [
+        new Button('../account', '../_public/resources/icons/account.svg', $_SESSION['username'], 'account'),
+        new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')
+    ];
+} else {
+    $buttons = [
+        new Button('../login', '../_public/resources/icons/login.svg', 'Se connecter', 'Connexion'),
+        new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')
+    ];
+}
+
+(new TopBar($buttons))->render();
+
 ?>
 <div class="GridContainer">
     <div class="Grid" id="grid"></div>

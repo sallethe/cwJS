@@ -1,19 +1,15 @@
 <?php
 
-include_once '../_server/interfaces/Component.php';
-include_once '../_server/components/Button.php';
-include_once '../_server/components/TopBar.php';
-include_once '../_server/components/Header.php';
-include_once '../_server/components/Script.php';
-include_once '../_server/components/Field.php';
-include_once '../_server/components/ErrorMessage.php';
+session_start();
 
-
-if (isset($_GET['debug']) && $_GET['debug'] == 'true') {
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-    error_reporting(E_ALL);
+if (isset($_SESSION['logged']) && $_SESSION['logged']) {
+    header('location: /cwJS/account/');
 }
+
+spl_autoload_register(function ($class) {
+    if (file_exists('../_server/components/' . $class . '.php'))
+        include_once '../_server/components/' . $class . '.php';
+});
 
 ?>
 
@@ -43,24 +39,28 @@ if (isset($_GET['error'])) {
 ?>
 
 <div class="FormsContainer">
-    <form>
+    <form method="post" action="../_server/handlers/signup.php">
         <div>
             <img alt="Register" src="../_public/resources/images/signup.svg">
             <h1>Créer un compte</h1>
         </div>
+        <?php
+
+        $namePattern = '^[a-zA-Z\- ]{2,50}$';
+        $idPattern = '^[a-zA-Z0-9]{5,20}$';
+        $pwdPattern = '^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+
+        ?>
         <div>
             <div>
-                <!-- TODO : pattern -->
-                <?php (new Field('fn', 'text', 'Prénom'))->render() ?>
-                <?php (new Field('ln', 'text', 'Nom'))->render() ?>
+                <?php (new Field('fn', 'text', 'Prénom', $namePattern))->render() ?>
+                <?php (new Field('ln', 'text', 'Nom', $namePattern))->render() ?>
             </div>
             <div class="separator"></div>
-            <!-- TODO : pattern -->
-            <?php (new Field('username', 'text', 'Nom d\'utilisateur'))->render() ?>
+            <?php (new Field('username', 'text', 'Nom d\'utilisateur', $idPattern))->render() ?>
             <div class="separator"></div>
-            <!-- TODO : pattern -->
-            <?php (new Field('passwd', 'password', 'Mot de passe'))->render() ?>
-            <?php (new Field('passwd2', 'password', 'Confirmer le mot de passe'))->render() ?>
+            <?php (new Field('passwd1', 'password', 'Mot de passe', $pwdPattern))->render() ?>
+            <?php (new Field('passwd2', 'password', 'Confirmer le mot de passe', $pwdPattern))->render() ?>
         </div>
         <input type="submit" value="Créer un compte">
     </form>
@@ -71,11 +71,9 @@ if (isset($_GET['error'])) {
             <h1>Se connecter</h1>
         </div>
         <div>
-            <!-- TODO : pattern -->
-            <?php (new Field('username', 'text', 'Nom d\'utilisateur'))->render() ?>
+            <?php (new Field('username', 'text', 'Nom d\'utilisateur', $idPattern))->render() ?>
             <div class="separator"></div>
-            <!-- TODO : pattern -->
-            <?php (new Field('passwd', 'password', 'Mot de passe'))->render() ?>
+            <?php (new Field('passwd', 'password', 'Mot de passe', $pwdPattern))->render() ?>
         </div>
         <input type="submit" value="Se connecter">
     </form>
