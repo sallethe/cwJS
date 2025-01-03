@@ -3,7 +3,7 @@
 session_start();
 
 spl_autoload_register(function ($class) {
-    include_once '../_server/components/'.$class.'.php';
+    include_once '../_server/components/' . $class . '.php';
 });
 
 ?>
@@ -21,7 +21,7 @@ spl_autoload_register(function ($class) {
 <body>
 <?php
 
-if($_SESSION['logged']){
+if (isset($_SESSION['logged']) && $_SESSION['logged']) {
     $buttons = [
         new Button('../account', '../_public/resources/icons/account.svg', $_SESSION['username'], 'account'),
         new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')
@@ -37,24 +37,37 @@ if($_SESSION['logged']){
 
 ?>
 <div class="GridContainer">
-    <div class="Grid" id="grid"></div>
+    <div>
+        <div class="Grid" id="grid"></div>
+    </div>
     <div class="WordSet" id="words">
         <h2>Horizontal</h2>
-        <div id></div>
+        <div id="horizontal"></div>
         <h2>Vertical</h2>
-        <div id></div>
+        <div id="vertical"></div>
     </div>
 </div>
 <script>
     const gr = new Grid(10, [
         c(0, 0),
-        c(5, 7),
-    ])
-    gr.generate()
+        c(5, 7)]
+    )
+
     const wd = new WordSet([
         new Word(false, c(0, 0), 5, 'Le chat'),
         new Word(true, c(0, 0), 6, 'Mme Selmi le dit avec un accent parfait.'),
-    ], gr)
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+        new Word(true, c(1, 5), 3, 'CBD.'),
+    ])
+
+    gr.generate()
     wd.generate()
 </script>
 </body>

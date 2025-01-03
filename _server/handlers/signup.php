@@ -1,16 +1,19 @@
 <?php
 
 session_start();
-
-include_once "../../_credentials.php";
+include_once '../../_credentials.php';
+include_once "../data/DatabaseHandler.php";
 include_once "../data/patterns.php";
+include_once "../data/AccessHandler.php";
+
+(new AccessHandler('/cwJS/account', false))->check();
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header('Location: /cwJS/login?error=invdt');
     die();
 }
 
-if(
+if (
     !isset($_POST["fn"]) ||
     !isset($_POST["ln"]) ||
     !isset($_POST["username"]) ||
@@ -23,13 +26,8 @@ if(
 }
 
 try {
-    $pdo = new PDO(
-        sprintf("mysql:host=%s;dbname=%s",
-            Credentials::$url,
-            Credentials::$database),
-        Credentials::$username,
-        Credentials::$password);
-} catch (PDOException $e) {
+    $pdo = new DatabaseHandler();
+} catch (Exception $e) {
     session_abort();
     header('Location: /cwJS/login?error=inter');
     die();
@@ -42,7 +40,7 @@ $passwd1 = $_POST["passwd1"];
 $passwd2 = $_POST["passwd2"];
 
 
-if(
+if (
     !preg_match(PhpPatterns::$idPattern, $username)
     || !preg_match(PhpPatterns::$namePattern, $firstname)
     || !preg_match(PhpPatterns::$namePattern, $lastname)
@@ -54,17 +52,15 @@ if(
     die();
 }
 
-if($passwd1 != $passwd2) {
+if ($passwd1 != $passwd2) {
     session_abort();
     header('Location: /cwJS/login?error=nspwd');
     die();
 }
 
-try {
-    $req = $pdo->prepare("SELECT COUNT(*) FROM USERS WHERE username = :username");
-    $req->bindParam(":username", $username);
-    $req->execute();
-} catch(PDOException $e) {
+$req = $pdo->prepare("SELECT COUNT(*) FROM USERS WHERE username = :username");
+$req->bindParam(":username", $username);
+if (!$req->execute()) {
     session_abort();
     header('Location: /cwJS/login?error=inter');
     die();
@@ -78,24 +74,22 @@ if ($req->fetchColumn() > 0) {
 
 $passwdHash = password_hash($passwd1, PASSWORD_DEFAULT);
 
-try {
-    $req = $pdo->prepare("INSERT INTO USERS (username, first_name, last_name, pwd_hash, role) VALUES (:username, :fn, :ln, :passwd, 0)");
-    $req->bindParam(":username", $username);
-    $req->bindParam(":fn", $firstname);
-    $req->bindParam(":ln", $lastname);
-    $req->bindParam(":passwd", $passwdHash);
-    $req->execute();
-} catch (PDOException $e) {
+
+$req = $pdo->prepare("INSERT INTO USERS (username, first_name, last_name, pwd_hash, role) VALUES (:username, :fn, :ln, :passwd, 0)");
+$req->bindParam(":username", $username);
+$req->bindParam(":fn", $firstname);
+$req->bindParam(":ln", $lastname);
+$req->bindParam(":passwd", $passwdHash);
+if (!$req->execute()) {
     session_abort();
     header('Location: /cwJS/login?error=inter');
     die();
 }
 
-try {
-    $req = $pdo->prepare("SELECT id FROM USERS WHERE username = :username");
-    $req->bindParam(":username", $username);
-    $req->execute();
-} catch(PDOException $e) {
+
+$req = $pdo->prepare("SELECT id FROM USERS WHERE username = :username");
+$req->bindParam(":username", $username);
+if (!$req->execute()) {
     session_abort();
     header('Location: /cwJS/login?error=inter');
     die();

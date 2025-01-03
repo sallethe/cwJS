@@ -1,30 +1,21 @@
 <?php
 
 session_start();
-include_once "../../_credentials.php";
+include_once '../../_credentials.php';
+include_once "../data/DatabaseHandler.php";
 include_once "../data/patterns.php";
+include_once "../data/AccessHandler.php";
+
+(new AccessHandler('/cwJS/login', true))->check();
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header('Location: /cwJS/account?error=invdt');
     die();
 }
 
-if (
-    !isset($_SESSION["logged"])
-    || !$_SESSION["logged"]
-) {
-    header('Location: /cwJS/login');
-    die();
-}
-
 try {
-    $pdo = new PDO(
-        sprintf("mysql:host=%s;dbname=%s",
-            Credentials::$url,
-            Credentials::$database),
-        Credentials::$username,
-        Credentials::$password);
-} catch (PDOException $e) {
+    $pdo = new DatabaseHandler();
+} catch (Exception $e) {
     header('Location: /cwJS/login?error=inter');
     die();
 }
@@ -37,52 +28,44 @@ if (
     die();
 }
 
-switch ($_POST["change"]) {
-    case 'names':
-        if (
-            !preg_match(PhpPatterns::$namePattern, $_POST['value'])
-            || !isset($_POST['value2'])
-            || !preg_match(PhpPatterns::$namePattern, $_POST['value2'])
-        ) {
-            header('Location: /cwJS/account?error=invdt');
-            die();
-        }
-        $req = $pdo->prepare('UPDATE USERS SET first_name = :fn, last_name = :ln WHERE id = :id');
-        $req->bindParam(':fn', $_POST['value']);
-        $req->bindParam(':ln', $_POST['value2']);
-        $_SESSION['fn'] = $_POST['value'];
-        $_SESSION['ln'] = $_POST['value2'];
-        break;
-    case 'id':
-        if (!preg_match(PhpPatterns::$idPattern, $_POST["value"])) {
-            header('Location: /cwJS/account?error=invdt');
-            die();
-        }
-        $req = $pdo->prepare('UPDATE USERS SET username = :user WHERE id = :id');
-        $req->bindValue(':user', $_POST["value"]);
-        $_SESSION['username'] = $_POST["value"];
-        break;
-    case 'pwd':
-        if (!preg_match(PhpPatterns::$pwdPattern, $_POST["value"])
-            || !isset($_POST['value2'])
-            || !preg_match(PhpPatterns::$pwdPattern, $_POST['value2'])
-            || $_POST['value2'] !== $_POST['value']) {
-            header('Location: /cwJS/account?error=invdt');
-            die();
-        }
-        $req = $pdo->prepare('UPDATE USERS SET pwd_hash = :pwd WHERE id = :id');
-        $req->bindValue(':pwd', password_hash($_POST["value"], PASSWORD_DEFAULT));
-        break;
-    default:
+if (isset($_POST['fn']) && isset($_POST['ln'])) {
+    if (
+        !preg_match(PhpPatterns::$namePattern, $_POST['fn'])
+        || !preg_match(PhpPatterns::$namePattern, $_POST['ln'])
+    ) {
         header('Location: /cwJS/account?error=invdt');
         die();
+    }
+    $req = $pdo->prepare('UPDATE USERS SET first_name = :fn, last_name = :ln WHERE id = :id');
+    $req->bindParam(':fn', $_POST['fn']);
+    $req->bindParam(':ln', $_POST['ln']);
+    $_SESSION['fn'] = $_POST['fn'];
+    $_SESSION['ln'] = $_POST['ln'];
+} elseif (isset($_POST['id'])) {
+    if (!preg_match(PhpPatterns::$idPattern, $_POST["id"])) {
+        header('Location: /cwJS/account?error=invdt');
+        die();
+    }
+    $req = $pdo->prepare('UPDATE USERS SET username = :user WHERE id = :id');
+    $req->bindValue(':user', $_POST["id"]);
+    $_SESSION['username'] = $_POST["id"];
+} elseif (isset($_POST['pwd']) && isset($_POST['pwd2'])) {
+    if (!preg_match(PhpPatterns::$pwdPattern, $_POST["pwd"])
+        || !preg_match(PhpPatterns::$pwdPattern, $_POST['pwd2'])
+        || $_POST['pwd'] !== $_POST['pwd2']) {
+        header('Location: /cwJS/account?error=invdt');
+        die();
+    }
+    $req = $pdo->prepare('UPDATE USERS SET pwd_hash = :pwd WHERE id = :id');
+    $req->bindValue(':pwd', password_hash($_POST["pwd"], PASSWORD_DEFAULT));
+} else {
+    header('Location: /cwJS/account?error=invdt');
+    die();
 }
 
 $req->bindValue(':id', $_SESSION["id"]);
 
-$res = $req->execute();
-
-if (!$res) {
+if (!$req->execute()) {
     header('Location: /cwJS/account?error=inter');
     die();
 }

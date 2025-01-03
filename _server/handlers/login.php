@@ -1,7 +1,11 @@
 <?php
 
 session_start();
-include_once "../../_credentials.php";
+include_once '../../_credentials.php';
+include_once "../data/DatabaseHandler.php";
+include_once "../data/AccessHandler.php";
+
+(new AccessHandler('/cwJS/account', false))->check();
 
 if ($_SERVER["REQUEST_METHOD"] != "POST") {
     header('Location: /cwJS/login?error=invdt');
@@ -17,13 +21,8 @@ if (!isset($_POST['username'])
 }
 
 try {
-    $pdo = new PDO(
-        sprintf("mysql:host=%s;dbname=%s",
-            Credentials::$url,
-            Credentials::$database),
-        Credentials::$username,
-        Credentials::$password);
-} catch (PDOException $e) {
+    $pdo = new DatabaseHandler();
+} catch (Exception $e) {
     session_abort();
     header('Location: /cwJS/login?error=inter');
     die();
@@ -41,11 +40,9 @@ if (
     die();
 }
 
-try {
-    $req = $pdo->prepare("SELECT * FROM USERS WHERE username = :username");
-    $req->bindParam(":username", $username);
-    $req->execute();
-} catch (PDOException $e) {
+$req = $pdo->prepare("SELECT * FROM USERS WHERE username = :username");
+$req->bindParam(":username", $username);
+if (!$req->execute()) {
     session_abort();
     header('Location: /cwJS/login?error=inter');
     die();

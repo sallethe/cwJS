@@ -1,13 +1,12 @@
 <?php
 
-include_once '../_credentials.php';
-include_once '../_server/data/patterns.php';
-
 session_start();
+include_once '../_credentials.php';
+include_once '../_server/data/DatabaseHandler.php';
+include_once '../_server/data/patterns.php';
+include_once "../_server/data/AccessHandler.php";
 
-if (!isset($_SESSION['logged']) || !$_SESSION['logged']) {
-    header('location: /cwJS/login/');
-}
+(new AccessHandler('/cwJS/login', true))->check();
 
 spl_autoload_register(function ($class) {
     if (file_exists('../_server/components/' . $class . '.php'))
@@ -15,13 +14,8 @@ spl_autoload_register(function ($class) {
 });
 
 try {
-    $pdo = new PDO(
-        sprintf("mysql:host=%s;dbname=%s",
-            Credentials::$url,
-            Credentials::$database),
-        Credentials::$username,
-        Credentials::$password);
-} catch (PDOException $e) {
+    $pdo = new DatabaseHandler();
+} catch (Exception $e) {
     http_response_code(500);
     die();
 }
@@ -42,9 +36,14 @@ try {
 <?php
 
 (new TopBar([
+    new Button('../create/', "../_public/resources/icons/edit.svg", "Créer", 'create'),
     new Button('../_server/handlers/logout.php', "../_public/resources/icons/logout.svg", "Se déconnecter", 'Logout'),
     new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')
 ]))->render();
+
+if (isset($_GET['error'])) {
+    (new ErrorMessage($_GET['error']))->render();
+}
 
 ?>
 
@@ -57,11 +56,9 @@ try {
     <div class="GridButtonContainer">
         <?php
 
-        try {
-            $req = $pdo->prepare("SELECT * FROM GRIDS WHERE creator = :creator");
-            $req->bindParam(':creator', $_SESSION['id']);
-            $req->execute();
-        } catch (PDOException $e) {
+        $req = $pdo->prepare("SELECT * FROM GRIDS WHERE creator = :creator");
+        $req->bindParam(':creator', $_SESSION['id']);
+        if (!$req->execute()) {
             http_response_code(500);
             die();
         }
@@ -85,12 +82,11 @@ try {
             <div>
                 <?php
 
-                (new Field('value', 'text', 'Nouveau prénom', HtmlPatterns::$namePattern))->render();
-                (new Field('value2', 'text', 'Nouveau nom', HtmlPatterns::$namePattern))->render();
+                (new Field('fn', 'text', 'Nouveau prénom', HtmlPatterns::$namePattern))->render();
+                (new Field('ln', 'text', 'Nouveau nom', HtmlPatterns::$namePattern))->render();
 
                 ?>
             </div>
-            <input type="hidden" name="change" value="names">
             <input type="submit" value="Mettre à jour">
         </form>
         <form method="post" action="../_server/handlers/account_edit.php">
@@ -99,8 +95,7 @@ try {
                 <h2><span><?php echo $_SESSION['username'] ?></span></h2>
             </div>
             <div>
-                <?php (new Field('value', 'text', 'Nouveau nom d\'utilisateur', HtmlPatterns::$idPattern))->render() ?>
-                <input type="hidden" name="change" value="id">
+                <?php (new Field('id', 'text', 'Nouveau nom d\'utilisateur', HtmlPatterns::$idPattern))->render() ?>
             </div>
             <input type="submit" value="Mettre à jour">
         </form>
@@ -111,10 +106,9 @@ try {
             </div>
             <div>
                 <?php
-                (new Field('value', 'password', 'Nouveau mot de passe', HtmlPatterns::$pwdPattern))->render();
-                (new Field('value2', 'password', 'Répéter le mot de passe', HtmlPatterns::$pwdPattern))->render();
+                (new Field('pwd', 'password', 'Nouveau mot de passe', HtmlPatterns::$pwdPattern))->render();
+                (new Field('pwd2', 'password', 'Répéter le mot de passe', HtmlPatterns::$pwdPattern))->render();
                 ?>
-                <input type="hidden" name="change" value="pwd">
             </div>
             <input type="submit" value="Mettre à jour">
         </form>

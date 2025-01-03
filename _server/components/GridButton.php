@@ -28,7 +28,7 @@ class GridButton extends Component
 
         if ($this->editable) {
             $buttons[] = new Button("/cwJS/create?id=" . $this->id, "/cwJS/_public/resources/icons/edit.svg", "Modifier", "Edit");
-            $buttons[] = new Button("/cwJS/create?id=" . $this->id . "&del=true", "/cwJS/_public/resources/icons/delete.svg", "Supprimer", "Delete");
+            $buttons[] = new Button("/cwJS/_server/handlers/delgrid.php?id=" . $this->id, "/cwJS/_public/resources/icons/delete.svg", "Supprimer", "Delete");
         }
 
         $buttonsCode = '';

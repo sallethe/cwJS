@@ -3,10 +3,10 @@
 session_start();
 
 include_once "../_server/data/patterns.php";
+include_once "../_server/data/AccessHandler.php";
 
-if (isset($_SESSION['logged']) && $_SESSION['logged']) {
-    header('location: /cwJS/account/');
-}
+(new AccessHandler('/cwJS/account', false))->check();
+
 
 spl_autoload_register(function ($class) {
     if (file_exists('../_server/components/' . $class . '.php'))

@@ -46,6 +46,14 @@
   gap: 32px
   width: 100%
   flex-grow: 1
+  overflow-y: scroll
+
+  > div:first-of-type
+    flex-grow: 1
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
 
 .ErrorMessage
   position: absolute
@@ -75,3 +83,128 @@
   > img
     height: 24px
     filter: var(--filter)
+
+.EditableWordsList
+  --width: 400px
+  height: 100%
+  padding: 0 16px
+  flex-grow: 1
+  align-self: stretch
+  min-width: var(--width)
+  max-width: var(--width)
+  display: flex
+  flex-direction: column
+  justify-content: start
+  align-items: stretch
+  overflow: scroll
+
+  label
+    display: none
+
+  button
+    transition: var(--trans)
+
+    &:hover
+      background: var(--hover)
+
+    &:active
+      background: var(--active)
+
+  > #horizontal, #vertical, #base
+    display: flex
+    flex-direction: column
+    align-items: stretch
+    justify-content: stretch
+    gap: 8px
+
+.ButtonsSet
+  display: flex
+  flex-direction: row
+  justify-content: stretch
+  align-items: stretch
+  gap: 8px
+
+  > button
+    background: var(--cell)
+    border: none
+    border-radius: var(--radius-cell)
+    font-weight: bold
+    padding: 16px
+    flex-grow: 1
+
+  > input[type=text]
+    background: var(--cell)
+    border: none
+    border-radius: var(--radius-cell)
+    padding: 16px
+    flex-grow: 1
+
+
+  > p
+    margin: 0
+    flex-grow: 2
+    background: var(--cell)
+    border-radius: var(--radius-cell)
+    font-weight: bold
+    padding: 16px
+
+    &#error
+      background: var(--error)
+
+  > form
+    display: none
+
+    /*>
+      flex-grow: 0.5
+      display: flex
+      flex-direction: row
+      justify-content: stretch
+      align-items: stretch
+
+      input[type=submit]
+        flex-grow: 1
+        background: var(--hover)
+        border: none
+        border-radius: var(--radius-cell)
+        font-weight: bold
+        padding: 16px
+        transition: var(--trans)
+
+        &:disabled
+          opacity: 0.5
+
+        &:hover
+          background: var(--active)
+
+        &:active
+          background: var(--main)*/
+
+.WordEntry
+  display: flex
+  flex-direction: row
+  justify-content: stretch
+  align-items: stretch
+  gap: 8px
+
+  > input[type=number]
+    background: var(--cell)
+    border: none
+    border-radius: var(--radius-cell)
+    font-weight: bold
+    padding: 16px 8px
+    width: 16px
+    flex-grow: 0.5
+    -moz-appearance: textfield
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button
+      -webkit-appearance: none
+      margin: 0
+
+  > input[type=text]
+    flex-grow: 1
+    border: none
+    background: var(--cell)
+    border-radius: var(--radius-cell)
+    font-weight: bold
+    padding: 16px

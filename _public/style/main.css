@@ -39,6 +39,10 @@
 }
 
 .WordSet {
+  --width: 400px;
+  min-width: var(--width);
+  max-width: var(--width);
+  padding: 0 16px;
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -49,14 +53,36 @@
 .WordSet * {
   margin: 0;
 }
+.WordSet > h2 {
+  background: var(--cell);
+  border-radius: var(--radius-cell);
+  padding: 16px;
+}
 .WordSet > div {
-  flex-grow: 1;
+  flex: 0 1 50%;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: start;
-  gap: 4px;
+}
+.WordSet > div > div {
+  border-radius: var(--radius-cell);
+  box-sizing: border-box;
+  gap: 8px;
+  padding: 8px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: start;
+  transition: var(--trans);
+}
+.WordSet > div > div:hover {
+  background: var(--cell);
+}
+.WordSet > div > div:focus, .WordSet > div > div:active {
+  background: var(--main) !important;
 }
 
 html:root {
@@ -96,7 +122,7 @@ html:root:not([data-theme=dark]) {
   background: var(--text);
 }
 .FormsContainer > form {
-  flex-basis: 400px;
+  width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -246,6 +272,14 @@ html:root:not([data-theme=dark]) {
   gap: 32px;
   width: 100%;
   flex-grow: 1;
+  overflow-y: scroll;
+}
+.GridContainer > div:first-of-type {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .ErrorMessage {
@@ -276,6 +310,131 @@ html:root:not([data-theme=dark]) {
 .ErrorMessage > img {
   height: 24px;
   filter: var(--filter);
+}
+
+.EditableWordsList {
+  --width: 400px;
+  height: 100%;
+  padding: 0 16px;
+  flex-grow: 1;
+  align-self: stretch;
+  min-width: var(--width);
+  max-width: var(--width);
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: stretch;
+  overflow: scroll;
+}
+.EditableWordsList label {
+  display: none;
+}
+.EditableWordsList button {
+  transition: var(--trans);
+}
+.EditableWordsList button:hover {
+  background: var(--hover);
+}
+.EditableWordsList button:active {
+  background: var(--active);
+}
+.EditableWordsList > #horizontal, .EditableWordsList #vertical, .EditableWordsList #base {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 8px;
+}
+
+.ButtonsSet {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 8px;
+}
+.ButtonsSet > button {
+  background: var(--cell);
+  border: none;
+  border-radius: var(--radius-cell);
+  font-weight: bold;
+  padding: 16px;
+  flex-grow: 1;
+}
+.ButtonsSet > input[type=text] {
+  background: var(--cell);
+  border: none;
+  border-radius: var(--radius-cell);
+  padding: 16px;
+  flex-grow: 1;
+}
+.ButtonsSet > p {
+  margin: 0;
+  flex-grow: 2;
+  background: var(--cell);
+  border-radius: var(--radius-cell);
+  font-weight: bold;
+  padding: 16px;
+}
+.ButtonsSet > p#error {
+  background: var(--error);
+}
+.ButtonsSet > form {
+  display: none;
+  /*>
+  * flex-grow: 0.5
+  * display: flex
+  * flex-direction: row
+  * justify-content: stretch
+  * align-items: stretch
+  *
+  * input[type=submit]
+  *  flex-grow: 1
+  *  background: var(--hover)
+  *  border: none
+  *  border-radius: var(--radius-cell)
+  *  font-weight: bold
+  *  padding: 16px
+  *  transition: var(--trans)
+  *
+  *  &:disabled
+  *    opacity: 0.5
+  *
+  *  &:hover
+  *    background: var(--active)
+  *
+  *  &:active
+  *    background: var(--main)*/
+}
+
+.WordEntry {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: stretch;
+  gap: 8px;
+}
+.WordEntry > input[type=number] {
+  background: var(--cell);
+  border: none;
+  border-radius: var(--radius-cell);
+  font-weight: bold;
+  padding: 16px 8px;
+  width: 16px;
+  flex-grow: 0.5;
+  -moz-appearance: textfield;
+}
+.WordEntry > input[type=number]::-webkit-outer-spin-button, .WordEntry > input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.WordEntry > input[type=text] {
+  flex-grow: 1;
+  border: none;
+  background: var(--cell);
+  border-radius: var(--radius-cell);
+  font-weight: bold;
+  padding: 16px;
 }
 
 @keyframes GoingAway {
