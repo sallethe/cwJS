@@ -43,7 +43,7 @@
   flex-direction: row
   justify-content: center
   align-items: center
-  gap: 32px
+  gap: 64px
   width: 100%
   flex-grow: 1
   overflow-y: scroll
@@ -56,7 +56,7 @@
     align-items: center
 
 .ErrorMessage
-  position: absolute
+  position: fixed
   right: 16px
   bottom: 16px
   display: flex
@@ -84,24 +84,27 @@
     height: 24px
     filter: var(--filter)
 
-.EditableWordsList
-  --width: 400px
-  height: 100%
-  padding: 0 16px
-  flex-grow: 1
-  align-self: stretch
-  min-width: var(--width)
-  max-width: var(--width)
+.ButtonsSet
   display: flex
-  flex-direction: column
-  justify-content: start
+  flex-direction: row
+  justify-content: stretch
   align-items: stretch
-  overflow: scroll
+  gap: 8px
 
-  label
-    display: none
-
-  button
+  > button, a
+    text-align: center
+    text-decoration: none
+    background: var(--cell)
+    border: none
+    border-radius: var(--radius-cell)
+    font-weight: bold
+    padding: 16px
+    flex-grow: 1
+    display: flex
+    flex-direction: row
+    justify-content: center
+    align-items: center
+    gap: 8px
     transition: var(--trans)
 
     &:hover
@@ -110,21 +113,11 @@
     &:active
       background: var(--active)
 
-  > #horizontal, #vertical, #base
-    display: flex
-    flex-direction: column
-    align-items: stretch
-    justify-content: stretch
-    gap: 8px
+    > img
+      height: 20px
+      filter: var(--filter)
 
-.ButtonsSet
-  display: flex
-  flex-direction: row
-  justify-content: stretch
-  align-items: stretch
-  gap: 8px
-
-  > button
+  > select
     background: var(--cell)
     border: none
     border-radius: var(--radius-cell)
@@ -137,7 +130,7 @@
     border: none
     border-radius: var(--radius-cell)
     padding: 16px
-    flex-grow: 1
+    flex-grow: 2
 
 
   > p
@@ -153,31 +146,6 @@
 
   > form
     display: none
-
-    /*>
-      flex-grow: 0.5
-      display: flex
-      flex-direction: row
-      justify-content: stretch
-      align-items: stretch
-
-      input[type=submit]
-        flex-grow: 1
-        background: var(--hover)
-        border: none
-        border-radius: var(--radius-cell)
-        font-weight: bold
-        padding: 16px
-        transition: var(--trans)
-
-        &:disabled
-          opacity: 0.5
-
-        &:hover
-          background: var(--active)
-
-        &:active
-          background: var(--main)*/
 
 .WordEntry
   display: flex
@@ -208,3 +176,169 @@
     border-radius: var(--radius-cell)
     font-weight: bold
     padding: 16px
+
+.IndexContainer
+  padding: 16px 64px
+  display: flex
+  flex-direction: column
+  align-items: stretch
+  justify-content: start
+  gap: 64px
+
+  > .ButtonsSet
+    align-self: center
+
+  > *
+    flex-grow: 1
+
+  > h1, p
+    margin: 0
+    text-align: center
+
+    > span
+      color: var(--main)
+
+.AccountContainer
+  display: flex
+  flex-direction: column
+  justify-content: start
+  align-items: stretch
+  gap: 64px
+  padding: 0 64px 128px
+
+  > h1, > h2
+    text-align: center
+
+  *
+    margin: 0
+
+  > div:first-of-type
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    gap: 8px
+
+    > img
+      height: 200px
+
+.GridButtonContainer
+  display: grid
+  grid-auto-rows: 1fr
+  grid-template-columns: repeat(4, 1fr)
+  gap: 32px
+
+.GridButton
+  flex-grow: 0
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  border: solid var(--text) 3px
+  border-radius: var(--radius-button)
+  padding: 16px
+  gap: 12px
+
+  > img
+    height: 96px
+    filter: var(--filter)
+
+  *
+    margin: 0
+
+  > h1
+    font-size: 1.25em
+
+  > h2
+    font-size: 0.8em
+    background: var(--cell)
+    padding: 4px 8px
+    border-radius: var(--radius-inf)
+
+  > div
+    display: flex
+    flex-direction: row
+    justify-content: end
+    align-items: center
+    gap: 8px
+
+.SearchField
+  display: flex
+  flex-direction: row
+  justify-content: center
+  align-items: stretch
+  gap: 8px
+
+  > input[type=submit]
+    padding: 0 16px
+    border: none
+    border-radius: var(--radius-cell)
+    background: var(--hover)
+    transition: var(--trans)
+    font-weight: bold
+
+    &:hover
+      background: var(--active)
+
+    &:active
+      background: var(--main)
+
+  > a
+    background: var(--cell)
+    border-radius: var(--radius-cell)
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    padding: 0 16px
+    transition: var(--trans)
+
+    &:hover
+      background: var(--hover)
+
+    &:active
+      background: var(--active)
+
+    > img
+      height: 20px
+      filter: var(--filter)
+
+  > input[type=text]
+    font-size: 1em
+    background: var(--cell)
+    border: none
+    border-radius: var(--radius-cell)
+    padding: 16px
+    flex: 0 1 256px
+    transition: var(--trans)
+
+    &:hover
+      background: var(--hover)
+
+    &:active
+      background: var(--active)
+
+  > div
+    background: var(--cell)
+    border-radius: var(--radius-cell)
+    display: flex
+    padding: 0 16px
+    flex-direction: row
+    justify-content: center
+    align-items: center
+    gap: 2px
+    transition: var(--trans)
+
+    &:active
+      background: var(--hover)
+
+    &:active
+      background: var(--active)
+
+    > select
+      font-weight: bold
+      background: none
+      border: none
+      height: 100%
+      margin-bottom: -2px
+      font-size: 1em

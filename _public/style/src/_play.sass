@@ -40,7 +40,7 @@
   --width: 400px
   min-width: var(--width)
   max-width: var(--width)
-  padding: 0 16px
+  padding: 0 16px 16px
   align-self: stretch
   display: flex
   flex-direction: column
@@ -50,6 +50,20 @@
 
   *
     margin: 0
+
+  > button
+    font-weight: bold
+    background: var(--hover)
+    border: none
+    border-radius: var(--radius-cell)
+    padding: 16px 0
+    transition: var(--trans)
+
+    &:hover
+      background: var(--active)
+
+    &:active
+      background: var(--main) !important
 
   > h2
     background: var(--cell)
@@ -81,3 +95,33 @@
 
       &:focus, &:active
         background: var(--main) !important
+
+.EditableWordsList
+  --width: 400px
+  height: 100%
+  padding: 0 16px
+  flex-grow: 1
+  align-self: stretch
+  min-width: var(--width)
+  max-width: var(--width)
+  display: flex
+  flex-direction: column
+  justify-content: start
+  align-items: stretch
+  overflow: scroll
+
+  button
+    transition: var(--trans)
+
+    &:hover
+      background: var(--hover)
+
+    &:active
+      background: var(--active)
+
+  > #horizontal, #vertical, #base
+    display: flex
+    flex-direction: column
+    align-items: stretch
+    justify-content: stretch
+    gap: 8px

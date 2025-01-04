@@ -1,4 +1,5 @@
 <?php
+
 class Credentials
 {
     public static string $url = "localhost";

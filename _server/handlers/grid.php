@@ -5,53 +5,55 @@ include_once '../../_credentials.php';
 include_once "../data/DatabaseHandler.php";
 include_once "../data/AccessHandler.php";
 
-(new AccessHandler('/cwJS/', true))->check();
+$handler = new AccessHandler('/cwJS/', true);
+$handler->check();
+manageRedirect(
+    $handler->isSuperUser(),
+    '/cwJS/'
+);
 
 try {
     $pdo = new DatabaseHandler();
 } catch (PDOException $e) {
-    header("Location: /cwJS/account?error=inter");
-    die();
+    manageRedirect(
+        true,
+        "/cwJS/account?error=inter"
+    );
 }
 
-if(
+manageRedirect(
     !isset($_POST['id']) ||
     !isset($_POST['grid']) ||
     !isset($_POST['words']) ||
     !isset($_POST['title']) ||
     !isset($_POST['dim']) ||
-    !isset($_POST['count'])
-) {
-    header("Location: /cwJS/");
-    die();
-}
+    !isset($_POST['diff']) ||
+    !isset($_POST['count']),
+    "/cwJS/"
+);
 
-print_r($_POST);
-
-if($_POST['id'] === '') {
-    $req = $pdo->prepare("INSERT INTO GRIDS(title, creator, width, height, grid, words, word_count) VALUES(:title, :creator, :width, :height, :grid, :words, :count)");
-    $req->bindParam(':creator', $_SESSION['id']);
+if ($_POST['id'] === '') {
+    $req = $pdo->prepare("INSERT INTO GRIDS(title, creator, dim, difficulty, grid, words, word_count, created) VALUES(:title, :creator, :dim, :diff, :grid, :words, :count, current_date())");
 } else {
-    $req = $pdo->prepare("UPDATE GRIDS SET title = :title, width = :width, height = :height, grid = :grid, words = :words, word_count = :count WHERE id = :id");
+    $req = $pdo->prepare("UPDATE GRIDS SET title = :title, dim = :dim, difficulty = :diff, grid = :grid, words = :words, word_count = :count WHERE id = :id AND creator = :creator");
     $req->bindParam(':id', $_POST['id']);
 }
 
+$req->bindParam(':creator', $_SESSION['id']);
 $req->bindParam(':title', $_POST['title']);
 $dim = intval($_POST['dim']);
 $count = intval($_POST['count']);
-$req->bindParam(':width', $dim, PDO::PARAM_INT);
-$req->bindParam(':height', $dim, PDO::PARAM_INT);
+$req->bindParam(':dim', $dim, PDO::PARAM_INT);
+$req->bindParam(':diff', $_POST['diff'], PDO::PARAM_INT);
 $req->bindParam(':grid', $_POST['grid']);
 $req->bindParam(':words', $_POST['words']);
 $req->bindParam(':count', $count, PDO::PARAM_INT);
+manageRedirect(
+    !$req->execute(),
+    "/cwJS/account?error=inter"
+);
 
-if(!$req->execute()){
-    header("Location: /cwJS/account?error=inter");
-    die();
-}
-
-if($_POST['id'] != '') {
-    header('Location: /cwJS/play/?id='.$_POST['id']);
-} else {
-    header('Location: /cwJS/play/?id='.$pdo->lastInsertId());
-}
+if ($_POST['id'] != '')
+    header('Location: /cwJS/play/?id=' . $_POST['id']);
+else
+    header('Location: /cwJS/play/?id=' . $pdo->lastInsertId());

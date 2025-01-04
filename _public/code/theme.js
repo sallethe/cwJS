@@ -15,6 +15,9 @@ class ThemeManager {
         e.onclick = () => this.switchTheme()
     }
 
+    /***
+     @returns void
+     */
     switchTheme() {
         const theme = this.getTheme()
         this.setTheme(theme === ThemeTag.DARK ?
@@ -22,6 +25,9 @@ class ThemeManager {
             : ThemeTag.DARK)
     }
 
+    /***
+     @returns string
+     */
     getTheme() {
         const theme = localStorage.getItem(THEME_LOCAL_STORAGE_ID)
         return theme === ThemeTag.DARK ?
@@ -29,10 +35,14 @@ class ThemeManager {
             : ThemeTag.LIGHT
     }
 
+    /***
+     @param {string} theme
+     @returns void
+     */
     setTheme(theme) {
         document.documentElement.dataset[THEME_DATASET_ID] = theme
         localStorage.setItem(THEME_LOCAL_STORAGE_ID, theme)
     }
 }
 
-new ThemeManager();
+new ThemeManager()

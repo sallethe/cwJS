@@ -7,7 +7,6 @@ include_once "../_server/data/AccessHandler.php";
 
 (new AccessHandler('/cwJS/account', false))->check();
 
-
 spl_autoload_register(function ($class) {
     if (file_exists('../_server/components/' . $class . '.php'))
         include_once '../_server/components/' . $class . '.php';
@@ -35,9 +34,8 @@ spl_autoload_register(function ($class) {
 
 <?php
 
-if (isset($_GET['error'])) {
+if (isset($_GET['error']))
     (new ErrorMessage($_GET['error']))->render();
-}
 ?>
 
 <div class="FormsContainer">

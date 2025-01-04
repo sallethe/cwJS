@@ -14,9 +14,7 @@ class Header extends Component
     public function getCode(): string
     {
         $scriptsCode = '';
-        foreach ($this->scripts as $script) {
-            $scriptsCode = $scriptsCode . $script->getCode();
-        }
+        foreach ($this->scripts as $script) $scriptsCode = $scriptsCode . $script->getCode();
         return sprintf('
             <head>
                 <meta charset="UTF-8">

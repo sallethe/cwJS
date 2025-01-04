@@ -1,3 +1,7 @@
+/***
+ @param {string} tag
+ @returns void
+ */
 const switchPwd = (tag) => {
     const pwd = document.getElementById(tag)
     const btn = document.getElementById(`${tag}b`)
@@ -6,6 +10,6 @@ const switchPwd = (tag) => {
     pwd.type = isPwd ? 'text' : 'password'
     btn.src = btn.src.replace(
         isPwd ? 'show' : 'hide',
-        isPwd ? 'hide' : 'show'
+        isPwd ? 'hide' : 'show',
     )
 }

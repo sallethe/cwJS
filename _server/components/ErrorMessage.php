@@ -4,16 +4,16 @@
 class ErrorMessage extends Component
 {
 
-    private string $code;
-
     public static array $errorMessages = array(
         'nspwd' => 'Les mots de passe ne correspondent pas.', // Not the Same PassWorD
         'loger' => 'Ce compte n\'existe pas.', // LOGin ERror
         'invdt' => 'Les données envoyées sont invalides.', // INValid DaTa
         'pwder' => 'Le mot de passe est incorrect.', // PassWorD ERror
         'exalr' => 'Ce compte existe déjà.', // EXists ALReady
+        'accdn' => 'Accès interdit.', // ACCes DeNied
         'inter' => 'Veuillez réessayer.' // INTernal ERror
     );
+    private string $code;
 
     public function __construct(string $message)
     {

@@ -18,6 +18,17 @@ class Field extends Component
         $this->required = $required;
     }
 
+    public function getCode(): string
+    {
+        $required = $this->required ? 'required' : '';
+        $pattern = $this->pattern ? 'pattern="' . $this->pattern . '"' : '';
+        $content = sprintf('
+            <label hidden for="%s">%s</label>
+            <input %s type="%s" id="%s" name="%s" placeholder="%s" %s>',
+            $this->name, $this->placeholder, $required, $this->type, $this->name, $this->name, $this->placeholder, $pattern);
+        return $this->type == 'password' ? $this->addPasswordButton($content) : $content;
+    }
+
     private function addPasswordButton(string $content)
     {
         return sprintf('
@@ -28,17 +39,6 @@ class Field extends Component
                 </a>
             </div>
             '
-        , $content, $this->name, $this->name . 'b');
-    }
-
-    public function getCode(): string
-    {
-        $required = $this->required ? 'required' : '';
-        $pattern = $this->pattern ? 'pattern="' . $this->pattern . '"' : '';
-        $content = sprintf('
-            <label for="%s">%s</label>
-            <input %s type="%s" id="%s" name="%s" placeholder="%s" %s>',
-            $this->name, $this->placeholder, $required, $this->type, $this->name, $this->name, $this->placeholder, $pattern);
-        return $this->type == 'password' ? $this->addPasswordButton($content) : $content;
+            , $content, $this->name, $this->name . 'b');
     }
 }

@@ -1,52 +1,39 @@
-const DEFAULT_GRID_DIM = 5
-
 class EditableGrid extends Grid {
 
-    constructor(
-        initializer = [],
-        dim = DEFAULT_GRID_DIM) {
-        if (initializer) {
-            super(initializer.length)
-            for (let x = 0; x < this.dim; x += 1)
-                for (let y = 0; y < this.dim; y += 1)
-                    this.matrix[x][y].element.value = initializer[x][y]
-        } else {
-            super(dim)
-        }
+    /***
+     @param {string[][]} initializer
+     */
+    constructor(initializer) {
+        super(initializer, false)
+        for (let x = 0; x < this.dim; x += 1)
+            for (let y = 0; y < this.dim; y += 1)
+                this.matrix[x][y].element.value = initializer[x][y]
     }
 
+    /***
+     @param {number} dim
+     @returns void
+     */
     resizeGrid(dim) {
         if (dim < 1) return
         if (dim === this.dim) return
 
         if (dim < this.dim) {
-            while (this.matrix.length > dim) {
+            while (this.matrix.length > dim)
                 this.matrix.pop()
-            }
             for (let x = 0; x < dim; x += 1)
-                while (this.matrix[x].length > dim) {
+                while (this.matrix[x].length > dim)
                     this.matrix[x].pop()
-                }
         }
 
         if (dim > this.dim) {
-            for (let x = 0; x < this.dim; x += 1) {
-                for (let y = this.dim; y < dim; y += 1) {
-                    this.matrix[x].push(new Cell({
-                        x: x,
-                        y: y,
-                    }))
-                }
-            }
-
+            for (let x = 0; x < this.dim; x += 1)
+                for (let y = this.dim; y < dim; y += 1)
+                    this.matrix[x].push(new Cell(c(x, y)))
             for (let x = this.dim; x < dim; x += 1) {
                 const l = []
-                for (let y = 0; y < dim; y += 1) {
-                    l.push(new Cell({
-                        x: x,
-                        y: y,
-                    }))
-                }
+                for (let y = 0; y < dim; y += 1)
+                    l.push(new Cell(c(x, y)))
                 this.matrix.push(l)
             }
         }
@@ -55,40 +42,48 @@ class EditableGrid extends Grid {
         this.unselect()
     }
 
+    /***
+     @returns string[][]
+     */
     convertIntoAnswer() {
         const res = []
         for (let x of this.matrix) {
             const l = []
-            for (let y of x) {
-                l.push(y.getValue())
-            }
+            for (let y of x) l.push(y.getValue())
             res.push(l)
         }
         return res
     }
 }
 
+/***
+ @prop {HTMLDivElement} horList
+ @prop {HTMLDivElement} verList
+ */
 class EditableWordSet {
     horList
     verList
 
+    /***
+     @param {Partial<Word>[]} initializer
+     */
     constructor(initializer = []) {
-        this.horList = document.getElementById('horizontal')
-        this.verList = document.getElementById('vertical')
+        this.horList = getFromId('horizontal')
+        this.verList = getFromId('vertical')
 
         const value =
-            document.getElementById('dimensions')
+            getFromId('dimensions')
 
-        document.getElementById('plus').onclick = () => {
-            overseer.grid.resizeGrid(overseer.grid.dim + 1)
-            value.innerText = String(overseer.grid.dim)
+        getFromId('plus').onclick = () => {
+            overseer.resizeGrid(overseer.dim + 1)
+            value.innerText = String(overseer.dim)
         }
-        document.getElementById('minus').onclick = () => {
-            overseer.grid.resizeGrid(overseer.grid.dim - 1)
-            value.innerText = String(overseer.grid.dim)
+        getFromId('minus').onclick = () => {
+            overseer.resizeGrid(overseer.dim - 1)
+            value.innerText = String(overseer.dim)
         }
 
-        value.innerText = String(overseer.grid.dim)
+        value.innerText = String(overseer.dim)
         this.verList.getElementsByTagName('button')[0].onclick =
             () => this.createVerticalEntry()
         this.verList.getElementsByTagName('button')[1].onclick =
@@ -99,11 +94,12 @@ class EditableWordSet {
             () => this.removeHorizontalEntry()
         overseer.words = this
 
-        if (initializer) {
-            this._initialize(initializer)
-        }
+        if (initializer) this._initialize(initializer)
     }
 
+    /***
+     @param {Partial<Word>[]} initializer
+     */
     _initialize(initializer) {
         for (let word of initializer) {
             if (word.vertical) {
@@ -124,31 +120,38 @@ class EditableWordSet {
         }
     }
 
-    _createEntry(dlen = 0,
-                 dx = 0,
-                 dy = 0,
-                 ddef = 'Lorem Ipsum') {
+    /***
+     @param {number} defLen
+     @param {number} defX
+     @param {number} defY
+     @param {string} defDef
+     @returns HTMLDivElement
+     */
+    _createEntry(defLen = 0,
+                 defX = 0,
+                 defY = 0,
+                 defDef = 'Lorem Ipsum') {
         const e = document.createElement('div')
         e.classList.add('WordEntry')
 
         const len = document.createElement('input')
         len.type = 'number'
         len.placeholder = 'Longueur'
-        len.value = String(dlen)
+        len.value = String(defLen)
         const x = document.createElement('input')
         x.type = 'number'
         x.placeholder = 'X'
         x.min = '0'
-        x.value = String(dx)
+        x.value = String(defX)
         const y = document.createElement('input')
         y.type = 'number'
         y.placeholder = 'Y'
         y.min = '0'
-        y.value = String(dy)
+        y.value = String(defY)
         const def = document.createElement('input')
         def.type = 'text'
         def.placeholder = 'Définition'
-        def.value = String(ddef)
+        def.value = String(defDef)
 
         e.appendChild(len)
         e.appendChild(x)
@@ -158,6 +161,9 @@ class EditableWordSet {
         return e
     }
 
+    /***
+     @returns void
+     */
     createVerticalEntry(
         dlen = 0,
         dx = 0,
@@ -169,6 +175,9 @@ class EditableWordSet {
             this.verList.querySelector('.ButtonsSet'))
     }
 
+    /***
+     @returns void
+     */
     createHorizontalEntry(
         dlen = 0,
         dx = 0,
@@ -180,18 +189,29 @@ class EditableWordSet {
             this.horList.querySelector('.ButtonsSet'))
     }
 
+    /***
+     @returns void
+     */
     removeHorizontalEntry() {
         const children = this.horList.children
         const len = children.length
         if (len > 1) children[len - 2].remove()
     }
 
+    /***
+     @returns void
+     */
     removeVerticalEntry() {
         const children = this.verList.children
         const len = children.length
         if (len > 1) children[len - 2].remove()
     }
 
+    /***
+     @param {HTMLDivElement} entry
+     @param {boolean} isVertical
+     @returns Partial<Word>
+     */
     _entryToWord(entry, isVertical = true) {
         if (entry.children.length === 4) {
             const len = entry.children[0]
@@ -208,6 +228,9 @@ class EditableWordSet {
         return undefined
     }
 
+    /***
+     @returns Partial<Word>[]
+     */
     convertIntoList() {
         const res = []
         for (const entry of this.verList.children) {
@@ -222,59 +245,90 @@ class EditableWordSet {
     }
 }
 
+/***
+ @prop {EditableWordSet} words
+ @prop {EditableGrid} grid
+ @prop {HTMLParagraphElement} error
+ */
 class Verificator {
     words
     grid
-
     error
 
-    wordsInput
-    gridInput
-    titleInput
-    dimInput
-    countInput
-
-    submitter
-
+    /***
+     @param {EditableWordSet} words
+     @param {EditableGrid} grid
+     */
     constructor(words, grid) {
-        this.wordsInput = document.getElementById('wordse')
-        this.gridInput = document.getElementById('gride')
-        this.titleInput = document.getElementById('title')
-        this.dimInput = document.getElementById('dim')
-        this.countInput = document.getElementById('count')
+        getFromId('checker').onclick =
+            () => this.validate()
 
-        document.getElementById('checker').onclick = () => {
-            this.validate()
-        }
-
-        this.submitter = document.getElementById('submitter')
-        this.error = document.getElementById('error')
+        this.error = getFromId('error')
         this.error.style.display = 'none'
 
         this.words = words
         this.grid = grid
     }
 
+    /***
+     @returns void
+     */
     validate() {
+
         if (this._checkIfValid()) {
             const words = this.words.convertIntoList()
             const grid = this.grid.convertIntoAnswer()
 
-            this.wordsInput.value = JSON.stringify(words)
-            this.gridInput.value = JSON.stringify(grid)
-            this.titleInput.value = document.getElementById('titleInput').value
-            this.dimInput.value = String(grid.length)
-            this.countInput.value = String(words.length)
-
-            this.submitter.submit()
+            getFromId('wordse').value = JSON.stringify(words)
+            getFromId('gride').value = JSON.stringify(grid)
+            getFromId('title').value = getFromId('titleInput').value
+            getFromId('diff').value = getFromId('diffInput').value
+            getFromId('dim').value = String(grid.length)
+            getFromId('count').value = String(words.length)
+            getFromId('submitter').submit()
         }
     }
 
+    /***
+     @param {string} error
+     @returns void
+     */
     _displayError(error = 'Erreur inconnue.') {
         this.error.style.display = 'block'
         this.error.innerText = error
     }
 
+    /***
+     @param {Word} word
+     @returns boolean
+     */
+    _checkWordUseful(word) {
+        if (word.length <= 0) {
+            this._displayError(
+                `Le mot aux coord° (${word.coords.x}, ${word.coords.y})
+                     est vide`)
+            return false
+        }
+
+        if (word.coords.x < 0 || word.coords.y < 0) {
+            this._displayError(
+                `Les coords° (${word.coords.x}, ${word.coords.y}) sont 
+                invalides`)
+            return false
+        }
+
+        if (!word.definition) {
+            this._displayError(
+                `La définition du mot (${word.coords.x}, 
+                    ${word.coords.y}) est vide`)
+            return false
+        }
+        return true
+    }
+
+    /***
+     @returns boolean
+     */
     _checkIfValid() {
         const grid = this.grid.convertIntoAnswer()
         const words = this.words.convertIntoList()
@@ -288,51 +342,50 @@ class Verificator {
         const dummyAnswer = []
         for (let i = 0; i < dim; i++) {
             const l = []
-            for (let j = 0; j < dim; j++)
-                l.push(false)
+            for (let j = 0; j < dim; j++) l.push(false)
             dummyAnswer.push(l)
         }
 
         for (let word of words) {
-            if (word.length <= 0) {
-                this._displayError(`Le mot aux coord° (${word.coords.x}, ${word.coords.y}) est vide`)
+            if (!this._checkWordUseful(word))
                 return false
-            }
-            if (!word.definition) {
-                this._displayError(`La définition du mot (${word.coords.x}, ${word.coords.y}) est vide`)
-                return false
-            }
             if (!word.vertical) {
                 if ((word.coords.y + word.length) > dim) {
                     this._displayError(
-                        `Le mot (${word.coords.x}, ${word.coords.y}) dépasse la grille (${word.coords.y + word.length} > ${dim})`)
+                        `Le mot (${word.coords.x}, ${word.coords.y}) 
+                        dépasse la grille (${word.coords.y + word.length} > 
+                        ${dim})`)
                     return false
                 }
-                for (let y = word.coords.y; y < word.coords.y + word.length; y += 1)
+                for (let y = word.coords.y;
+                     y < word.coords.y + word.length; y += 1)
                     dummyAnswer[word.coords.x][y] = true
             } else {
                 if ((word.coords.x + word.length) > dim) {
                     this._displayError(
-                        `Le mot (${word.coords.x}, ${word.coords.y}) dépasse la grille (${word.coords.x + word.length} > ${dim})`)
+                        `Le mot (${word.coords.x}, ${word.coords.y}) 
+                        dépasse la grille (${word.coords.x + word.length} > 
+                        ${dim})`)
                     return false
                 }
-                for (let x = word.coords.x; x < word.coords.x + word.length; x += 1)
+                for (let x = word.coords.x;
+                     x < word.coords.x + word.length; x += 1)
                     dummyAnswer[x][word.coords.y] = true
             }
         }
 
         for (let x = 0; x < dim; x += 1) {
-            for (let y = 0; y < dim; y += 1) {
+            for (let y = 0; y < dim; y += 1)
                 if (!((dummyAnswer[x][y] && grid[x][y] !== '') ||
                     (!dummyAnswer[x][y] && grid[x][y] === ''))
                 ) {
                     this._displayError(`Coord° (${x}, ${y}) invalid`)
                     return false
                 }
-            }
+
         }
 
-        if (document.getElementById('titleInput').value === '') {
+        if (getFromId('titleInput').value === '') {
             this._displayError('Titre vide')
             return false
         }

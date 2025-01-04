@@ -5,29 +5,34 @@ include_once '../../_credentials.php';
 include_once "../data/DatabaseHandler.php";
 include_once "../data/AccessHandler.php";
 
-(new AccessHandler('/cwJS/', true))->check();
+$handler = new AccessHandler('/cwJS/', true);
+$handler->check();
+manageRedirect(
+    $handler->isSuperUser(),
+    "/cwJS/"
+);
 
 try {
     $pdo = new DatabaseHandler();
 } catch (PDOException $e) {
-    header("Location: /cwJS/account?error=inter");
-    die();
+    manageRedirect(
+        true,
+        "/cwJS/account?error=inter"
+    );
 }
 
-if(
+manageRedirect(
     !isset($_GET['id']) ||
-    $_GET['id'] == ''
-) {
-    header("Location: /cwJS/account/?error=invdt");
-    die();
-}
+    $_GET['id'] == '',
+    "/cwJS/account/?error=invdt"
+);
 
 $req = $pdo->prepare("DELETE FROM GRIDS WHERE id = :id");
 $req->bindParam(':id', $_GET['id'], PDO::PARAM_INT);
-if(!$req->execute()) {
-    header("Location: /cwJS/account?error=inter");
-    die();
-}
+manageRedirect(
+    !$req->execute(),
+    '/cwJS/account?error=inter'
+);
 
 header("Location: /cwJS/account");
 die();

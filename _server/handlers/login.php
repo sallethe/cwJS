@@ -4,71 +4,65 @@ session_start();
 include_once '../../_credentials.php';
 include_once "../data/DatabaseHandler.php";
 include_once "../data/AccessHandler.php";
+include_once "../data/patterns.php";
 
 (new AccessHandler('/cwJS/account', false))->check();
 
-if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    header('Location: /cwJS/login?error=invdt');
-    die();
-}
+manageRedirect(
+    $_SERVER["REQUEST_METHOD"] != "POST",
+    "/cwJS/login?error=invdt"
+);
 
-if (!isset($_POST['username'])
-    || !isset($_POST['passwd'])
-) {
-    session_abort();
-    header('Location: /cwJS/login?error=invdt');
-    die();
-}
+manageRedirect(
+    !isset($_POST['username'])
+    || !isset($_POST['passwd']),
+    "/cwJS/login?error=invdt"
+);
 
 try {
     $pdo = new DatabaseHandler();
 } catch (Exception $e) {
-    session_abort();
-    header('Location: /cwJS/login?error=inter');
-    die();
+    manageRedirect(
+        true,
+        "/cwJS/login?error=inter"
+    );
 }
 
 $username = $_POST["username"];
 $password = $_POST["passwd"];
 
-if (
-    !preg_match('/^[a-zA-Z0-9]{5,20}$/', $username) ||
-    !preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)
-) {
-    session_abort();
-    header('Location: /cwJS/login?error=invdt');
-    die();
-}
+manageRedirect(
+    !preg_match(PhpPatterns::$idPattern, $username) ||
+    !preg_match(PhpPatterns::$pwdPattern, $password),
+    "/cwJS/login?error=invdt"
+);
 
 $req = $pdo->prepare("SELECT * FROM USERS WHERE username = :username");
 $req->bindParam(":username", $username);
-if (!$req->execute()) {
-    session_abort();
-    header('Location: /cwJS/login?error=inter');
-    die();
-}
-
+manageRedirect(
+    !$req->execute(),
+    "/cwJS/login/?error=inter"
+);
 $user = $req->fetch();
 
-if ($user === false) {
-    session_abort();
-    header('Location: /cwJS/login?error=loger');
-    die();
-}
+manageRedirect(
+    $user === false,
+    "/cwJS/login/?error=loger"
+);
 
-if (!password_verify($password, $user['pwd_hash'])) {
-    session_abort();
-    header('Location: /cwJS/login?error=pwder');
-    die();
-}
+manageRedirect(
+    !password_verify($password, $user['pwd_hash']),
+    "/cwJS/login/?error=pwder"
+);
 
 session_regenerate_id(true);
 
 $_SESSION['username'] = $user['username'];
 $_SESSION['id'] = $user['id'];
-$_SESSION['logged'] = true;
+$_SESSION['su'] = $user['role'] === 1;
 $_SESSION['fn'] = $user['first_name'];
 $_SESSION['ln'] = $user['last_name'];
+
 
 header('Location: /cwJS/account');
 die();

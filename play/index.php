@@ -1,10 +1,35 @@
 <?php
 
 session_start();
+include_once '../_credentials.php';
+include_once '../_server/data/DatabaseHandler.php';
+include_once '../_server/data/AccessHandler.php';
+include_once '../_server/data/CookieHandler.php';
 
 spl_autoload_register(function ($class) {
     include_once '../_server/components/' . $class . '.php';
 });
+
+manageRedirect(
+    !isset($_GET['id']) || $_GET['id'] == '',
+    "../index.php"
+);
+
+try {
+    $pdo = new DatabaseHandler();
+} catch (Exception $e) {
+    showFailure(500);
+}
+
+$req = $pdo->prepare("SELECT * FROM GRIDS WHERE id = :id");
+$req->bindParam(':id', $_GET['id']);
+manageRedirect(
+    !$req->execute(),
+    "../index.php"
+);
+$data = $req->fetch();
+
+(new CookieHandler())->addGrid($_GET['id']);
 
 ?>
 
@@ -12,7 +37,7 @@ spl_autoload_register(function ($class) {
 <html lang="fr">
 <?php
 
-(new Header('Jeu - cwJS', [
+(new Header($data['title'] . ' - cwJS', [
     new Script('../_public/code/grid.js'),
     new Script('../_public/code/theme.js', true),
 ]))->render();
@@ -21,17 +46,16 @@ spl_autoload_register(function ($class) {
 <body>
 <?php
 
-if (isset($_SESSION['logged']) && $_SESSION['logged']) {
-    $buttons = [
-        new Button('../account', '../_public/resources/icons/account.svg', $_SESSION['username'], 'account'),
-        new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')
-    ];
-} else {
-    $buttons = [
-        new Button('../login', '../_public/resources/icons/login.svg', 'Se connecter', 'Connexion'),
-        new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')
-    ];
-}
+$buttons = [
+    new Button('../', '../_public/resources/icons/error.svg', 'Abandonner', 'giveup'),
+    null,
+    new Button('', '../_public/resources/icons/theme.svg', 'Thème', 'Thème', 'theme')
+];
+
+if ((new AccessHandler())->isConnected())
+    $buttons[1] = new Button('../account', '../_public/resources/icons/account.svg', $_SESSION['username'], 'account');
+else
+    $buttons[1] = new Button('../login', '../_public/resources/icons/login.svg', 'Se connecter', 'Connexion');
 
 (new TopBar($buttons))->render();
 
@@ -45,27 +69,17 @@ if (isset($_SESSION['logged']) && $_SESSION['logged']) {
         <div id="horizontal"></div>
         <h2>Vertical</h2>
         <div id="vertical"></div>
+        <button id="check">Vérifier</button>
     </div>
 </div>
 <script>
-    const gr = new Grid(10, [
-        c(0, 0),
-        c(5, 7)]
-    )
+    const answers = <?php echo $data['grid'] ?>;
+    const words = <?php echo $data['words'] ?>;
+    const id = <?php echo $_GET['id'] ?>
 
-    const wd = new WordSet([
-        new Word(false, c(0, 0), 5, 'Le chat'),
-        new Word(true, c(0, 0), 6, 'Mme Selmi le dit avec un accent parfait.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-        new Word(true, c(1, 5), 3, 'CBD.'),
-    ])
+    const gr = new Grid(answers)
+    const wd = new WordSet(words)
+    const s = new Solver(gr, answers, id)
 
     gr.generate()
     wd.generate()

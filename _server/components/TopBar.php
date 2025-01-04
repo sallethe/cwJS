@@ -12,9 +12,7 @@ class TopBar extends Component
     public function getCode(): string
     {
         $linksCode = '';
-        foreach ($this->links as $link) {
-            $linksCode = $linksCode . $link->getCode();
-        }
+        foreach ($this->links as $link) $linksCode = $linksCode . $link->getCode();
         return sprintf('
             <div class="TopBar">
                 <a href="/cwJS">

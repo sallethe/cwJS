@@ -42,7 +42,7 @@
   --width: 400px;
   min-width: var(--width);
   max-width: var(--width);
-  padding: 0 16px;
+  padding: 0 16px 16px;
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -52,6 +52,20 @@
 }
 .WordSet * {
   margin: 0;
+}
+.WordSet > button {
+  font-weight: bold;
+  background: var(--hover);
+  border: none;
+  border-radius: var(--radius-cell);
+  padding: 16px 0;
+  transition: var(--trans);
+}
+.WordSet > button:hover {
+  background: var(--active);
+}
+.WordSet > button:active {
+  background: var(--main) !important;
 }
 .WordSet > h2 {
   background: var(--cell);
@@ -83,6 +97,37 @@
 }
 .WordSet > div > div:focus, .WordSet > div > div:active {
   background: var(--main) !important;
+}
+
+.EditableWordsList {
+  --width: 400px;
+  height: 100%;
+  padding: 0 16px;
+  flex-grow: 1;
+  align-self: stretch;
+  min-width: var(--width);
+  max-width: var(--width);
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: stretch;
+  overflow: scroll;
+}
+.EditableWordsList button {
+  transition: var(--trans);
+}
+.EditableWordsList button:hover {
+  background: var(--hover);
+}
+.EditableWordsList button:active {
+  background: var(--active);
+}
+.EditableWordsList > #horizontal, .EditableWordsList #vertical, .EditableWordsList #base {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 8px;
 }
 
 html:root {
@@ -131,9 +176,6 @@ html:root:not([data-theme=dark]) {
 }
 .FormsContainer > form .separator {
   height: 16px;
-}
-.FormsContainer > form label {
-  display: none;
 }
 .FormsContainer > form > div:first-of-type {
   display: flex;
@@ -269,7 +311,7 @@ html:root:not([data-theme=dark]) {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 32px;
+  gap: 64px;
   width: 100%;
   flex-grow: 1;
   overflow-y: scroll;
@@ -283,7 +325,7 @@ html:root:not([data-theme=dark]) {
 }
 
 .ErrorMessage {
-  position: absolute;
+  position: fixed;
   right: 16px;
   bottom: 16px;
   display: flex;
@@ -312,40 +354,6 @@ html:root:not([data-theme=dark]) {
   filter: var(--filter);
 }
 
-.EditableWordsList {
-  --width: 400px;
-  height: 100%;
-  padding: 0 16px;
-  flex-grow: 1;
-  align-self: stretch;
-  min-width: var(--width);
-  max-width: var(--width);
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: stretch;
-  overflow: scroll;
-}
-.EditableWordsList label {
-  display: none;
-}
-.EditableWordsList button {
-  transition: var(--trans);
-}
-.EditableWordsList button:hover {
-  background: var(--hover);
-}
-.EditableWordsList button:active {
-  background: var(--active);
-}
-.EditableWordsList > #horizontal, .EditableWordsList #vertical, .EditableWordsList #base {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: stretch;
-  gap: 8px;
-}
-
 .ButtonsSet {
   display: flex;
   flex-direction: row;
@@ -353,7 +361,33 @@ html:root:not([data-theme=dark]) {
   align-items: stretch;
   gap: 8px;
 }
-.ButtonsSet > button {
+.ButtonsSet > button, .ButtonsSet a {
+  text-align: center;
+  text-decoration: none;
+  background: var(--cell);
+  border: none;
+  border-radius: var(--radius-cell);
+  font-weight: bold;
+  padding: 16px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: var(--trans);
+}
+.ButtonsSet > button:hover, .ButtonsSet a:hover {
+  background: var(--hover);
+}
+.ButtonsSet > button:active, .ButtonsSet a:active {
+  background: var(--active);
+}
+.ButtonsSet > button > img, .ButtonsSet a > img {
+  height: 20px;
+  filter: var(--filter);
+}
+.ButtonsSet > select {
   background: var(--cell);
   border: none;
   border-radius: var(--radius-cell);
@@ -366,7 +400,7 @@ html:root:not([data-theme=dark]) {
   border: none;
   border-radius: var(--radius-cell);
   padding: 16px;
-  flex-grow: 1;
+  flex-grow: 2;
 }
 .ButtonsSet > p {
   margin: 0;
@@ -381,30 +415,6 @@ html:root:not([data-theme=dark]) {
 }
 .ButtonsSet > form {
   display: none;
-  /*>
-  * flex-grow: 0.5
-  * display: flex
-  * flex-direction: row
-  * justify-content: stretch
-  * align-items: stretch
-  *
-  * input[type=submit]
-  *  flex-grow: 1
-  *  background: var(--hover)
-  *  border: none
-  *  border-radius: var(--radius-cell)
-  *  font-weight: bold
-  *  padding: 16px
-  *  transition: var(--trans)
-  *
-  *  &:disabled
-  *    opacity: 0.5
-  *
-  *  &:hover
-  *    background: var(--active)
-  *
-  *  &:active
-  *    background: var(--main)*/
 }
 
 .WordEntry {
@@ -437,17 +447,28 @@ html:root:not([data-theme=dark]) {
   padding: 16px;
 }
 
-@keyframes GoingAway {
-  0% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+.IndexContainer {
+  padding: 16px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: start;
+  gap: 64px;
 }
+.IndexContainer > .ButtonsSet {
+  align-self: center;
+}
+.IndexContainer > * {
+  flex-grow: 1;
+}
+.IndexContainer > h1, .IndexContainer p {
+  margin: 0;
+  text-align: center;
+}
+.IndexContainer > h1 > span, .IndexContainer p > span {
+  color: var(--main);
+}
+
 .AccountContainer {
   display: flex;
   flex-direction: column;
@@ -477,7 +498,7 @@ html:root:not([data-theme=dark]) {
   display: grid;
   grid-auto-rows: 1fr;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 32px;
 }
 
 .GridButton {
@@ -515,6 +536,99 @@ html:root:not([data-theme=dark]) {
   gap: 8px;
 }
 
+.SearchField {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 8px;
+}
+.SearchField > input[type=submit] {
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--radius-cell);
+  background: var(--hover);
+  transition: var(--trans);
+  font-weight: bold;
+}
+.SearchField > input[type=submit]:hover {
+  background: var(--active);
+}
+.SearchField > input[type=submit]:active {
+  background: var(--main);
+}
+.SearchField > a {
+  background: var(--cell);
+  border-radius: var(--radius-cell);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+  transition: var(--trans);
+}
+.SearchField > a:hover {
+  background: var(--hover);
+}
+.SearchField > a:active {
+  background: var(--active);
+}
+.SearchField > a > img {
+  height: 20px;
+  filter: var(--filter);
+}
+.SearchField > input[type=text] {
+  font-size: 1em;
+  background: var(--cell);
+  border: none;
+  border-radius: var(--radius-cell);
+  padding: 16px;
+  flex: 0 1 256px;
+  transition: var(--trans);
+}
+.SearchField > input[type=text]:hover {
+  background: var(--hover);
+}
+.SearchField > input[type=text]:active {
+  background: var(--active);
+}
+.SearchField > div {
+  background: var(--cell);
+  border-radius: var(--radius-cell);
+  display: flex;
+  padding: 0 16px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  transition: var(--trans);
+}
+.SearchField > div:active {
+  background: var(--hover);
+}
+.SearchField > div:active {
+  background: var(--active);
+}
+.SearchField > div > select {
+  font-weight: bold;
+  background: none;
+  border: none;
+  height: 100%;
+  margin-bottom: -2px;
+  font-size: 1em;
+}
+
+@keyframes GoingAway {
+  0% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 body {
   margin: 0;
   font-family: "Ubuntu", sans-serif;

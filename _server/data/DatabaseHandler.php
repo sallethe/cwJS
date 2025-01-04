@@ -4,7 +4,8 @@ class DatabaseHandler
 {
     private PDO $connection;
 
-    public function __construct() {
+    public function __construct()
+    {
         try {
             $this->connection = new PDO(
                 sprintf("mysql:host=%s;dbname=%s",
