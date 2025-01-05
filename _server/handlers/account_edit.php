@@ -18,11 +18,6 @@ try {
     manageRedirect(true, "/cwJS/login?error=inter");
 }
 
-manageRedirect(
-    !isset($_POST["change"])
-    || !isset($_POST["value"]),
-    "/cwJS/login?error=invdt");
-
 if (isset($_POST['fn']) && isset($_POST['ln'])) {
     manageRedirect(
         !preg_match(PhpPatterns::$namePattern, $_POST['fn'])

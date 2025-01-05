@@ -58,7 +58,7 @@ if (isset($_GET['error']))
         <img src="../_public/resources/images/account.svg" alt="Hello">
         <h1>Bonjour, <?php echo $_SESSION['fn'] ?></h1>
     </div>
-    <h2>Vos grilles jouées</h2>
+    <h2>Vos grilles en cours</h2>
     <div class="GridButtonContainer">
         <?php
 
