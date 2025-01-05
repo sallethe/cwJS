@@ -25,9 +25,13 @@ $req = $pdo->prepare("SELECT * FROM GRIDS WHERE id = :id");
 $req->bindParam(':id', $_GET['id']);
 manageRedirect(
     !$req->execute(),
-    "../index.php"
+    "../"
 );
 $data = $req->fetch();
+manageRedirect(
+    $data === false,
+    '../'
+);
 
 (new CookieHandler())->addGrid($_GET['id']);
 

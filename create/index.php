@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-
 include_once "../_server/data/AccessHandler.php";
 include_once "../_credentials.php";
 include_once "../_server/data/DatabaseHandler.php";
@@ -27,13 +26,18 @@ $id = "";
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $req = $pdo->prepare('SELECT * FROM GRIDS WHERE id = :id');
+    $req = $pdo->prepare('SELECT * FROM GRIDS WHERE id = :id AND creator = :creator');
     $req->bindParam(':id', $_GET['id']);
+    $req->bindParam(':creator', $_SESSION['id']);
     manageRedirect(
         !$req->execute(),
         "/cwJS/account/?error=inter"
     );
     $data = $req->fetch();
+    manageRedirect(
+        $data === false,
+        "/cwJS/account/?error=accdn"
+    );
     $words = $data['words'];
     $grid = $data['grid'];
     $title = $data['title'];

@@ -28,4 +28,4 @@ CREATE TABLE GRIDS (
 INSERT INTO USERS (id, username, first_name, last_name, pwd_hash, role)
     VALUE (0, 'superuser', 'Florent', 'Nicart', '$2y$10$E8678n9tcpyWmYztgcxue.NIsgoUiX89iVkgeKChj9F9Dv1.Xo5WK', 1)
 
-# root FUcbDXno1!9l!4
+# superuser FUcbDXno1!9l!4

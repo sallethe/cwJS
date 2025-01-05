@@ -13,7 +13,7 @@ destination_path=${destination_path:-$DEFAULT_DESTINATION}
 
 if [[ ! -d "$destination_path" ]]; then
   echo "-> '$destination_path' n'existe pas. Création..."
-  sudoo mkdir -p "$destination_path" || {
+  sudo mkdir -p "$destination_path/cwJS/" || {
     echo "/!\\ Une erreur est survenue pendant la création du dossier. Sortie..."
     exit 1
   }
@@ -27,7 +27,7 @@ sudo mysql < "./_setup/setup.sql" || {
 
 echo "-> Déplacement du dossier..."
 
-sudo mv ./* "$destination_path" || {
+sudo cp ./* "$destination_path/cwJS/" || {
     echo "/!\\ Une erreur est survenue pendant le déplacement. Sortie..."
   exit 1
 }
